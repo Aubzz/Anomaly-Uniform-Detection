@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Uniform Compliance Detection</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #f4f4f9;
+      }
+      h1 {
+        color: #333;
+      }
+      #video-feed {
+        border: 2px solid #333;
+        border-radius: 8px;
+      }
+      .status {
+        margin-top: 20px;
+        font-size: 18px;
+        color: #555;
+      }
+      .compliant {
+        color: green;
+      }
+      .anomaly {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Uniform Compliance Detection</h1>
+    <img id="video-feed" src="/video_feed" alt="Video Feed" />
+    <div class="status" id="status">Analyzing...</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.min.js"></script>
+    <script>
+      const socket = io();
+      const statusDiv = document.getElementById("status");
+
+      socket.on("detection_data", (data) => {
+        const detection = JSON.parse(data);
+        if (detection.status === "compliant") {
+          statusDiv.textContent =
+            "Status: Compliant! All uniform components detected.";
+          statusDiv.className = "status compliant";
+        } else {
+          statusDiv.textContent = `Status: Anomaly detected! Missing items: ${detection.missing.join(
+            ", "
+          )}`;
+          statusDiv.className = "status anomaly";
+        }
+      });
+    </script>
+  </body>
+</html>
